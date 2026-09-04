@@ -1,0 +1,40 @@
+name: Improve responsive footer
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    if: github.event.head_commit.message != 'Improve responsive footer layout'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Append responsive footer styles
+        run: |
+          cat >> src/styles.css <<'CSS'
+
+/* Responsive footer enhancement */
+footer{width:100%;display:grid;grid-template-columns:minmax(240px,1.2fr) minmax(260px,2fr);column-gap:48px;row-gap:14px;align-items:start;text-align:left}
+footer>.logo{grid-column:1;grid-row:1}
+footer>p:first-of-type{grid-column:1;grid-row:2;max-width:420px;color:#d1d5db;margin:0;line-height:1.6}
+footer>.footlinks{grid-column:2;grid-row:1 / span 2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:center}
+footer>.footlinks button{min-width:0;min-height:42px;padding:10px 8px;border:1px solid #374151;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;white-space:normal;line-height:1.25;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+footer>.footlinks button:hover{background:#1f2937;border-color:#f59e0b;transform:translateY(-2px)}
+footer>.footlinks button:nth-child(1)::before{content:'⌂';font-size:17px}
+footer>.footlinks button:nth-child(2)::before{content:'🛒';font-size:14px}
+footer>.footlinks button:nth-child(3)::before{content:'ⓘ';font-size:15px}
+footer>.footlinks button:nth-child(4)::before{content:'☎';font-size:15px}
+footer>.footlinks button:nth-child(5)::before{content:'♙';font-size:16px}
+footer>p:last-of-type{grid-column:1 / -1;margin:18px 0 0;padding-top:18px;border-top:1px solid #374151;color:#9ca3af;font-size:12px;text-align:center}
+@media(max-width:900px){footer{grid-template-columns:1fr;column-gap:0;padding:32px 16px 100px;text-align:center}footer>.logo{grid-column:1;grid-row:auto;margin-inline:auto}footer>p:first-of-type{grid-column:1;grid-row:auto;max-width:560px;margin:0 auto}footer>.footlinks{grid-column:1;grid-row:auto;width:100%;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}footer>.footlinks button{min-height:46px;font-size:12px;padding:9px 5px}footer>p:last-of-type{grid-column:1;margin-top:8px}}
+@media(max-width:600px){footer{padding:28px 12px 100px}footer>.logoWords strong{font-size:18px}footer>.footlinks{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}footer>.footlinks button{min-height:48px;font-size:12px}footer>.footlinks button:nth-child(5){grid-column:1 / -1;max-width:220px;width:100%;justify-self:center}footer>p:first-of-type{font-size:13px;max-width:330px}footer>p:last-of-type{font-size:10px;line-height:1.5}}
+@media(max-width:380px){footer>.footlinks{grid-template-columns:1fr}footer>.footlinks button:nth-child(5){grid-column:auto;max-width:none}}
+@media(prefers-reduced-motion:reduce){footer>.footlinks button{transition:none}}
+CSS
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/styles.css
+          git commit -m "Improve responsive footer layout"
+          git push
